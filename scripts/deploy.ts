@@ -5,9 +5,9 @@ let ERC20_ADDRESS = "";
 
 async function deployNFT() {
   const NFT_NAME = "Coffee_NFT";
-  const NFT_SYMBOL = "CMNFT"
+  const NFT_SYMBOL = "CNFT";
   const NFT = await ethers.getContractFactory("CoffeeMock");
-  const deployInstance = await NFT.deploy(NFT_NAME,NFT_SYMBOL);
+  const deployInstance = await NFT.deploy(NFT_NAME, NFT_SYMBOL);
   await deployInstance.deployed();
 
   NFT_ADDRESS = deployInstance.address;
@@ -16,9 +16,9 @@ async function deployNFT() {
 
 async function deployERC20() {
   const ERC20_NAME = "Coffee_ERC20";
-  const ERC20_SYMBOL = "CMERC20"
+  const ERC20_SYMBOL = "CERC20";
   const ERC20 = await ethers.getContractFactory("MyToken");
-  const deployInstance = await ERC20.deploy(ERC20_NAME,ERC20_SYMBOL);
+  const deployInstance = await ERC20.deploy(ERC20_NAME, ERC20_SYMBOL);
   await deployInstance.deployed();
 
   ERC20_ADDRESS = deployInstance.address;
@@ -26,11 +26,14 @@ async function deployERC20() {
 }
 
 async function deployCoffee() {
-  const COFFEE_PRICE = 5;
-
+  const COFFEE_PRICE = ethers.utils.parseEther("1");
 
   const Coffee = await ethers.getContractFactory("Coffee");
-  const deployInstance = await Coffee.deploy(COFFEE_PRICE,ERC20_ADDRESS,NFT_ADDRESS);
+  const deployInstance = await Coffee.deploy(
+    COFFEE_PRICE,
+    ERC20_ADDRESS,
+    NFT_ADDRESS
+  );
   await deployInstance.deployed();
 
   console.log("Coffee deployed at:", deployInstance.address);
