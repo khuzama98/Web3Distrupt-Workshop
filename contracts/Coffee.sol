@@ -14,6 +14,10 @@ contract Coffee {
         uint256 noOfDonations;
     }
 
+    /*//////////////////////////////////////////////////////////////
+                            STATE VARIABLES
+    //////////////////////////////////////////////////////////////*/
+
     IERC20 public token;
     CoffeeMock public nft;
 
@@ -23,6 +27,10 @@ contract Coffee {
     bool private _locked;
 
     mapping(address => Donate) private _donations;
+
+    /*//////////////////////////////////////////////////////////////
+                                MODIFIERS
+    //////////////////////////////////////////////////////////////*/
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Revert: not an owner");
@@ -36,8 +44,16 @@ contract Coffee {
         _locked = false;
     }
 
+    /*//////////////////////////////////////////////////////////////
+                                EVENTS
+    //////////////////////////////////////////////////////////////*/
+
     event Withdrawal(uint256 tokenAmount, uint256 etherAmount, uint256 when);
     event Deposit(uint256 amount, address sender);
+
+    /*//////////////////////////////////////////////////////////////
+                                CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
 
     constructor(
         uint256 _price,
@@ -50,15 +66,17 @@ contract Coffee {
         owner = payable(msg.sender);
     }
 
+    /*//////////////////////////////////////////////////////////////
+                        NON-VIEW/PURE FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+
     receive() external payable {
         _donations[msg.sender].ethAmount += msg.value;
         _donations[msg.sender].noOfDonations += 1;
-        emit Deposit(msg.value, msg.sender);
-    }
 
-    function setPrice(uint256 _price) external onlyOwner returns (uint256) {
-        price = _price;
-        return price;
+        nft.mintTo(msg.sender);
+
+        emit Deposit(msg.value, msg.sender);
     }
 
     function donate(uint256 _num) external noReentrant returns (bool) {
@@ -81,9 +99,7 @@ contract Coffee {
         // transfers tokens from msg.sender to this contract
         token.transferFrom(msg.sender, address(this), _donationPrice);
 
-        if (_donations[msg.sender].noOfDonations == 1) {
-            nft.mintTo(msg.sender);
-        }
+        nft.mintTo(msg.sender);
 
         return true;
     }
@@ -102,6 +118,15 @@ contract Coffee {
 
         return true;
     }
+
+    function setPrice(uint256 _price) external onlyOwner returns (uint256) {
+        price = _price;
+        return price;
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                            VIEW/PURE FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
 
     function getUserDetails()
         external

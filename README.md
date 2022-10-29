@@ -2,8 +2,8 @@
 
 ## Buy Me A Coffee ☕
 
-This project demonstrates a basic smart contract usage. The project is designed to give basic concepts of smart contracts to the participants of Web3Distrupt.
-This smart contarct consist of following components,
+This project demonstrates a basic smart contract usage. The project is designed to give basic concepts of smart contracts to the participants of Web3Disrupt.
+This smart contract consist of following components,
 
 1. Coffee Smart Contract.
 2. Coffee ERC-20 Token.
