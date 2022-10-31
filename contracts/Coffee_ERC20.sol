@@ -4,6 +4,10 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract MyToken is ERC20 {
+    /*//////////////////////////////////////////////////////////////
+                                CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
+
     constructor(
         string memory _name,
         string memory _symbol
@@ -15,6 +19,19 @@ contract MyToken is ERC20 {
         // 1 dollar = 100 cents
         // 1 token = 1 * (10 ** decimals)
         uint8 _decimals = decimals();
-        _mint(msg.sender, 10000 * 10**uint256(_decimals));
+        _mint(msg.sender, 10_000 * 10**uint256(_decimals));
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                            EFFECT FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+
+    /**
+    * @dev Mints a new MyToken tokens of amount `_amount` to address `_to`
+    * @notice This is not a production ready function as anyone can mint tokens
+    * Only for demo purposes
+    */
+    function mint(address _to, uint256 _amount) external {
+        _mint(_to, _amount);
     }
 }

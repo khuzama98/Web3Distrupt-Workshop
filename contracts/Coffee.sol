@@ -9,8 +9,7 @@ import "hardhat/console.sol";
 
 contract Coffee {
     struct Donate {
-        uint256 token;
-        uint256 ethAmount;
+        uint256 tokensDonated;
         uint256 noOfDonations;
     }
 
@@ -21,7 +20,7 @@ contract Coffee {
     IERC20 public token;
     CoffeeMock public nft;
 
-    uint256 public price;
+    uint256 public priceOfCoffee;
     address payable public owner;
 
     bool private _locked;
@@ -48,62 +47,66 @@ contract Coffee {
                                 EVENTS
     //////////////////////////////////////////////////////////////*/
 
-    event Withdrawal(uint256 tokenAmount, uint256 etherAmount, uint256 when);
+    event Withdrawal(uint256 tokenAmount, uint256 when);
     event Deposit(uint256 amount, address sender);
+    event SetPriceOfCoffee(uint256 prevPriceOfCoffee, uint256 newPriceOfCoffee);
 
     /*//////////////////////////////////////////////////////////////
                                 CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
     constructor(
-        uint256 _price,
+        uint256 _priceOfCoffee,
         address _erc20,
         address _erc721
     ) {
-        price = _price;
+        priceOfCoffee = _priceOfCoffee;
         token = IERC20(_erc20);
         nft = CoffeeMock(_erc721);
         owner = payable(msg.sender);
     }
 
     /*//////////////////////////////////////////////////////////////
-                        NON-VIEW/PURE FUNCTIONS
+                            EFFECT FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
-    receive() external payable {
-        _donations[msg.sender].ethAmount += msg.value;
-        _donations[msg.sender].noOfDonations += 1;
-
-        nft.mintTo(msg.sender);
-
-        emit Deposit(msg.value, msg.sender);
-    }
-
+    /** 
+     * @notice User can call this function to donate a coffee to owner
+     * @dev User must have tokens to donate.
+    */
     function donate(uint256 _num) external noReentrant returns (bool) {
         require(_num > 0, "Revert: bro donate 1 coffee atleast!");
 
-        // loading state variable in memory for gas optimizzation
-        uint256 _price = price;
+        // loading state variable in memory for gas optimization
+        uint256 _priceOfCoffee = priceOfCoffee;
 
-        // for simplicity we're assuming 1 token = 1 usd
-        uint256 _donationPrice = _price * _num; 
+        // multiply number of coffees to donate by price of coffee
+        // to get total donation
+        uint256 _donation = _priceOfCoffee * _num; 
 
-        uint256 _balance = token.balanceOf(msg.sender);
-        require(_balance > _donationPrice, "Revert: bro you're broke as well!");
+        uint256 _tokenBalance = token.balanceOf(msg.sender);
+        require(_tokenBalance > _donation, "Revert: bro you're broke as well!");
 
         // updating state
-        _donations[msg.sender].token += _donationPrice;
+        _donations[msg.sender].tokensDonated += _donation;
         _donations[msg.sender].noOfDonations += 1;
 
-        // aproval must be given from msg.sender to this contract address before
+        // approval must be given from msg.sender to this contract address before
         // transfers tokens from msg.sender to this contract
-        token.transferFrom(msg.sender, address(this), _donationPrice);
+        token.transferFrom(msg.sender, address(this), _donation);
 
+        // mint nft to msg.sender
         nft.mintTo(msg.sender);
+
+        emit Deposit(_donation, msg.sender);
 
         return true;
     }
 
+    /** 
+     * @notice Owner can withdraw tokens in the contract
+     * @dev Only callable by owner
+    */
     function withdrawAmount() external onlyOwner returns (bool) {
         uint256 _balance = token.balanceOf(msg.sender);
         require(_balance > 0, "Revert: No tokens in contract!");
@@ -111,36 +114,38 @@ contract Coffee {
         // transfer tokens in the contract to owner
         token.transferFrom(address(this), owner, _balance);
 
-        // transfer ether in the contract to owner
-        owner.transfer(address(this).balance);
-
-        emit Withdrawal(_balance, address(this).balance, block.timestamp);
+        emit Withdrawal(_balance, block.timestamp);
 
         return true;
     }
 
-    function setPrice(uint256 _price) external onlyOwner returns (uint256) {
-        price = _price;
-        return price;
+    /** 
+     * @notice Owner can set price of coffee
+     * @dev Only callable by owner
+    */
+    function setPriceOfCoffee(uint256 _priceOfCoffee) external onlyOwner {
+        emit SetPriceOfCoffee(priceOfCoffee, _priceOfCoffee);
+        priceOfCoffee = _priceOfCoffee;
     }
 
     /*//////////////////////////////////////////////////////////////
                             VIEW/PURE FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
-    function getUserDetails()
+    /** 
+     * @notice Returns info of `_user`
+    */
+    function getUserDetails(address _user)
         external
         view
         returns (
-            uint256,
             uint256,
             uint256
         )
     {
         return (
-            _donations[msg.sender].token,
-            _donations[msg.sender].ethAmount,
-            _donations[msg.sender].noOfDonations
+            _donations[_user].tokensDonated,
+            _donations[_user].noOfDonations
         );
     }
 }
