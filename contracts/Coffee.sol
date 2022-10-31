@@ -95,8 +95,10 @@ contract Coffee {
         // transfers tokens from msg.sender to this contract
         token.transferFrom(msg.sender, address(this), _donation);
 
-        // mint nft to msg.sender
-        nft.mintTo(msg.sender);
+        for (uint256 i; i < _num; i++) {
+            // mint nft to msg.sender
+            nft.mintTo(msg.sender);
+        }
 
         emit Deposit(_donation, msg.sender);
 
@@ -107,12 +109,12 @@ contract Coffee {
      * @notice Owner can withdraw tokens in the contract
      * @dev Only callable by owner
     */
-    function withdrawAmount() external onlyOwner returns (bool) {
-        uint256 _balance = token.balanceOf(msg.sender);
+    function withdraw() external onlyOwner returns (bool) {
+        uint256 _balance = token.balanceOf(address(this));
         require(_balance > 0, "Revert: No tokens in contract!");
 
         // transfer tokens in the contract to owner
-        token.transferFrom(address(this), owner, _balance);
+        token.transfer(owner, _balance);
 
         emit Withdrawal(_balance, block.timestamp);
 
