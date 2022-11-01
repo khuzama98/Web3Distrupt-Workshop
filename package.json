@@ -3,9 +3,13 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^1.0.2",
     "dotenv": "^16.0.3",
-    "hardhat": "^2.11.2"
+    "hardhat": "^2.11.2",
+    "shx": "^0.3.4"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.7.3"
+  },
+  "scripts": {
+    "clean": "shx rm -rf ./artifacts ./cache ./coverage ./coverage.json ./typechain-types"
   }
 }

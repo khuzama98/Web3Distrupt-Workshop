@@ -1,12 +1,17 @@
+# vscode settings for workspace
+.vscode/settings.json
+
+# dependencies
 node_modules
+
+# env variables
 .env
+
+# Hardhat files
+cache
+artifacts
+typechain-types
+
+# Coverage
 coverage
 coverage.json
-typechain
-typechain-types
-cache
-artifacts
-#Hardhat files
-cache
-artifacts
-

@@ -1,0 +1,11 @@
+image: "gitpod/workspace-node:latest"
+
+tasks:
+  - init: "npm install"
+
+vscode:
+  extensions:
+    - "dbaeumer.vscode-eslint"
+    - "esbenp.prettier-vscode"
+    - "juanblanco.solidity"
+    - "dotenv.dotenv-vscode"

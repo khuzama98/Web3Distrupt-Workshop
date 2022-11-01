@@ -49,6 +49,15 @@ contract CoffeeMock is ERC721 {
         return _currentTokenId;
     }
 
+    /**
+     * @inheritdoc ERC721
+     */
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        super.tokenURI(tokenId);
+
+        return "";
+    }
+
     /*//////////////////////////////////////////////////////////////
                             PRIVATE FUNCTIONS
     //////////////////////////////////////////////////////////////*/
