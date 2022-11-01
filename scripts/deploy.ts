@@ -40,8 +40,24 @@ async function deployCoffee() {
 }
 
 async function main() {
+  const { chainId, name } = await ethers.provider.getNetwork();
+  const [owner] = await ethers.getSigners();
+  const ethBalance = await ethers.provider.getBalance(owner.address);
+
+  console.log(`Network: ${name} & ChainId: ${chainId}`);
+  console.log(
+    `Deployer: ${owner.address}, Balance: ${ethers.utils.formatEther(
+      ethBalance
+    )} ETH`
+  );
+
+  console.log("Deploying NFT");
   await deployNFT();
+
+  console.log("Deploying ERC20");
   await deployERC20();
+
+  console.log("Deploying Coffee");
   await deployCoffee();
 }
 
