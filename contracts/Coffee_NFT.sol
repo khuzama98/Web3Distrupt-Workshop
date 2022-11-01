@@ -53,9 +53,10 @@ contract CoffeeMock is ERC721 {
      * @inheritdoc ERC721
      */
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        super.tokenURI(tokenId);
+        _requireMinted(tokenId);
 
-        return "";
+        // https://{cid}.ipfs.nftstorage.link/
+        return "ipfs://bafkreidtzux4ez453colsi2vafe6ylskwze5ybbcogjdtnasp6erdamota";
     }
 
     /*//////////////////////////////////////////////////////////////
