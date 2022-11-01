@@ -2,16 +2,16 @@
 
 [![Open in Gitpod][gitpod-badge]][gitpod] [![Hardhat][hardhat-badge]][hardhat]
 
-[gitpod]: https://gitpod.io/#https://github.com/khuzama98/Web3Distrupt-Workshop/tree/erc20
+[gitpod]: https://gitpod.io/#https://github.com/khuzama98/Web3Distrupt-Workshop/tree/erc721
 [gitpod-badge]: https://img.shields.io/badge/Gitpod-Open%20in%20Gitpod-FFB45B?logo=gitpod
 [hardhat]: https://hardhat.org/
 [hardhat-badge]: https://img.shields.io/badge/Built%20with-Hardhat-FFDB1C.svg
 
-## ERC20 Token
+## ERC721 Token
 
-This project demonstrates a basic ERC20 smart contract usage. The project is designed to give basic concepts of smart contracts to the participants of Web3Disrupt.
+This project demonstrates a basic ERC721 smart contract usage. The project is designed to give basic concepts of smart contracts to the participants of Web3Disrupt.
 
-Reference implementation of standard ERC20 according to [EIP-20](https://eips.ethereum.org/EIPS/eip-20)
+Reference implementation of standard ERC721 according to [EIP-721](https://eips.ethereum.org/EIPS/eip-721)
 
 ## Usage
 
@@ -22,7 +22,7 @@ Reference implementation of standard ERC20 according to [EIP-20](https://eips.et
 git clone https://github.com/khuzama98/Web3Distrupt-Workshop
 
 # Checkout branch
-git checkout erc20
+git checkout erc721
 
 # Install development dependencies
 npm install

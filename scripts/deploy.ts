@@ -1,13 +1,13 @@
 import { ethers } from "hardhat";
 
-async function deployERC20() {
-  const ERC20_NAME = "MyToken";
-  const ERC20_SYMBOL = "MTKN";
-  const ERC20 = await ethers.getContractFactory("MyToken");
-  const deployInstance = await ERC20.deploy(ERC20_NAME, ERC20_SYMBOL);
+async function deployNFT() {
+  const NFT_NAME = "NFT";
+  const NFT_SYMBOL = "NFT";
+  const NFT = await ethers.getContractFactory("NFT");
+  const deployInstance = await NFT.deploy(NFT_NAME, NFT_SYMBOL);
   await deployInstance.deployed();
 
-  console.log("Coffee ERC20 deployed at:", deployInstance.address);
+  console.log("Coffee NFT deployed at:", deployInstance.address);
 }
 
 async function main() {
@@ -22,8 +22,8 @@ async function main() {
     )} ETH`
   );
 
-  console.log("Deploying ERC20");
-  await deployERC20();
+  console.log("Deploying NFT");
+  await deployNFT();
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -1,11 +1,11 @@
-import { ethers, run } from "hardhat";
+import { run } from "hardhat";
 
-async function verifyERC20() {
+async function verifyERC721() {
   try {
     await run("verify:verify", {
       address: "",
-      constructorArguments: ["MyToken", "MTKN"],
-      contract: "contracts/MyToken.sol:MyToken",
+      constructorArguments: ["NFT", "NFT"],
+      contract: "contracts/NFT.sol:NFT",
     });
   } catch (error: any) {
     if (error.message.toLowerCase().includes("already verified")) {
@@ -18,7 +18,7 @@ async function verifyERC20() {
 
 async function main() {
   console.log("Verifying NFT");
-  await verifyERC20();
+  await verifyERC721();
 }
 
 // We recommend this pattern to be able to use async/await everywhere
