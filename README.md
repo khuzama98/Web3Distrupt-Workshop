@@ -2,29 +2,16 @@
 
 [![Open in Gitpod][gitpod-badge]][gitpod] [![Hardhat][hardhat-badge]][hardhat]
 
-[gitpod]: https://gitpod.io/#https://github.com/khuzama98/Web3Distrupt-Workshop
+[gitpod]: https://gitpod.io/#https://github.com/khuzama98/Web3Distrupt-Workshop/tree/erc20
 [gitpod-badge]: https://img.shields.io/badge/Gitpod-Open%20in%20Gitpod-FFB45B?logo=gitpod
 [hardhat]: https://hardhat.org/
 [hardhat-badge]: https://img.shields.io/badge/Built%20with-Hardhat-FFDB1C.svg
 
-## Buy Me A Coffee ☕
+## ERC20 Token
 
-This project demonstrates a basic smart contract usage. The project is designed to give basic concepts of smart contracts to the participants of Web3Disrupt.
+This project demonstrates a basic ERC20 smart contract usage. The project is designed to give basic concepts of smart contracts to the participants of Web3Disrupt.
 
-This smart contract consist of following components:
-
-1. Coffee Smart Contract.
-2. Coffee ERC-20 Token.
-3. Coffee ERC-721 Token.
-
-## Functionalities
-
-The smart contract consist of following functions,
-
-1. Donate tokens worth a coffee to the owner.
-2. Minting an NFT to the donar address.
-3. Set price of the coffee.
-4. Withdraw amount from the smart contract to owner account.
+Reference implementation of standard ERC20 according to [EIP-20](https://eips.ethereum.org/EIPS/eip-20)
 
 ## Usage
 
@@ -33,6 +20,9 @@ The smart contract consist of following functions,
 ```sh
 # Clone repo
 git clone https://github.com/khuzama98/Web3Distrupt-Workshop
+
+# Checkout branch
+git checkout erc20
 
 # Install development dependencies
 npm install
