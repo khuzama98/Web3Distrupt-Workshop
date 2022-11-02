@@ -11,7 +11,9 @@ contract CoffeeMock is ERC721 {
                             STATE VARIABLES
     //////////////////////////////////////////////////////////////*/
 
-    uint256 private _currentTokenId = 0; // the current NFT ID tracker
+    // the current NFT ID tracker
+    // be default value is 0
+    uint256 private _currentTokenId; 
 
     /*//////////////////////////////////////////////////////////////
                                 CONSTRUCTOR
@@ -20,7 +22,7 @@ contract CoffeeMock is ERC721 {
     constructor(
         string memory _name,
         string memory _symbol
-    ) ERC721(_name,_symbol) {}
+    ) ERC721(_name, _symbol) {}
 
     /*//////////////////////////////////////////////////////////////
                             EFFECT FUNCTIONS
@@ -32,9 +34,13 @@ contract CoffeeMock is ERC721 {
     * Only for demo purposes
     */
     function mintTo(address _to) external {
-        uint256 _newID = _getNextID();
-        _incrementIDInState();
-        _safeMint(_to, _newID);
+        // increment the token id
+        _currentTokenId++;
+
+        // get the incremented new token id
+        uint256 _id = _currentTokenId;
+
+        _safeMint(_to, _id);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -57,24 +63,5 @@ contract CoffeeMock is ERC721 {
 
         // https://{cid}.ipfs.nftstorage.link/
         return "ipfs://bafkreidtzux4ez453colsi2vafe6ylskwze5ybbcogjdtnasp6erdamota";
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                            PRIVATE FUNCTIONS
-    //////////////////////////////////////////////////////////////*/
-
-    /**
-     * @dev Increments the value of _currentTokenId
-     */
-    function _incrementIDInState() private {
-        _currentTokenId++;
-    }
-
-    /**
-     * @dev Calculates the next token ID based on value of _currentTokenId
-     * @return uint256 for the next token ID
-     */
-    function _getNextID() private view returns (uint256) {
-        return _currentTokenId + 1;
     }
 }
