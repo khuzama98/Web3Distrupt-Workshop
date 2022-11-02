@@ -30,7 +30,13 @@ The smart contract consist of following functions,
 
 ### Setting up
 
+Make sure to install [nodejs](https://nodejs.org/en/)
+
 ```sh
+# Check node and npm versions
+node -v # v16.14
+npm -v  # v8.19
+
 # Clone repo
 git clone https://github.com/khuzama98/Web3Distrupt-Workshop
 
@@ -77,6 +83,11 @@ npx hardhat run scripts/deploy.ts
 # Run script to deploy contracts to a network specified in `hardhat.config.ts`
 npx hardhat run scripts/deploy.ts --network goerli
 
+# Run script to verify contract to the network they are deployed to
+# - Make sure to update the script with valid addresses and args
+# - Make sure to set api keys of explorer in `.env` file, checkout `.env.example` for example
+npx hardhat run scripts/verify.ts --network goerli
+
 # Run to clean artifacts, cache etc
 npm run clean
 ```
@@ -84,3 +95,25 @@ npm run clean
 ## Disclaimer
 
 These contracts are `NOT` production ready and are `ONLY` for demo and educational purposes.
+
+## What next?
+
+#### Checkout some of these templates to gain advance exposure on how to utilize hardhat at its fullest
+
+- [starter-kits](https://github.com/smartcontractkit/starter-kits) - list of some of the cool templates
+- [hardhat-template](https://github.com/paulrberg/hardhat-template) - most used hardhat template across the smart contract ecosystem
+- [hardhat-js-starterkit](https://github.com/ahmedali8/hardhat-js-starterkit) - hardhat template in JavaScript
+- [hardhat-ts-template](https://github.com/ahmedali8/hardhat-ts-template) - hardhat template with common utils
+
+#### Checkout some of these projects and resources
+
+- [Patrick Collins 32-hour course](https://youtu.be/gyMwXuJrbJQ)
+- [prb-contracts](https://github.com/paulrberg/prb-contracts/tree/95f575eaf03fae1ac630405ec485d28d82c83e8a)
+- [unipilot-v2](https://github.com/Unipilot/unipilot-v2)
+- [ERC721A](https://github.com/chiru-labs/ERC721A)
+- [opensea/seaport](https://github.com/ProjectOpenSea/seaport)
+
+#### Other solidity development frameworks
+
+- [foundry](https://book.getfoundry.sh/)
+- [brownie](https://github.com/eth-brownie/brownie)
