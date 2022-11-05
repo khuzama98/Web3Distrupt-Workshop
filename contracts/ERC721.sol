@@ -7,11 +7,23 @@ abstract contract ERC721 {
                                 EVENTS
     //////////////////////////////////////////////////////////////*/
 
-    event Transfer(address indexed from, address indexed to, uint256 indexed id);
+    event Transfer(
+        address indexed from,
+        address indexed to,
+        uint256 indexed id
+    );
 
-    event Approval(address indexed owner, address indexed spender, uint256 indexed id);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 indexed id
+    );
 
-    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
+    event ApprovalForAll(
+        address indexed owner,
+        address indexed operator,
+        bool approved
+    );
 
     /*//////////////////////////////////////////////////////////////
                         METADATA STORAGE/LOGIC
@@ -32,7 +44,9 @@ abstract contract ERC721 {
     mapping(address => uint256) internal _balanceOf;
 
     function ownerOf(uint256 id) public view virtual returns (address owner) {
-        require((owner = _ownerOf[id]) != address(0), "NOT_MINTED");
+        require(_ownerOf[id] != address(0), "NOT_MINTED");
+
+        owner = _ownerOf[id];
     }
 
     function balanceOf(address owner) public view virtual returns (uint256) {
@@ -65,7 +79,10 @@ abstract contract ERC721 {
     function approve(address spender, uint256 id) public virtual {
         address owner = _ownerOf[id];
 
-        require(msg.sender == owner || isApprovedForAll[owner][msg.sender], "NOT_AUTHORIZED");
+        require(
+            msg.sender == owner || isApprovedForAll[owner][msg.sender],
+            "NOT_AUTHORIZED"
+        );
 
         getApproved[id] = spender;
 
@@ -83,27 +100,32 @@ abstract contract ERC721 {
         address to,
         uint256 id
     ) public virtual {
+        // from must be the owner of the token id
         require(from == _ownerOf[id], "WRONG_FROM");
 
         require(to != address(0), "INVALID_RECIPIENT");
 
+        // from must be the caller or approved address or operator
         require(
-            msg.sender == from || isApprovedForAll[from][msg.sender] || msg.sender == getApproved[id],
+            msg.sender == from ||
+                isApprovedForAll[from][msg.sender] ||
+                msg.sender == getApproved[id],
             "NOT_AUTHORIZED"
         );
 
-        // Underflow of the sender's balance is impossible because we check for
-        // ownership above and the recipient's balance can't realistically overflow.
-        unchecked {
-            _balanceOf[from]--;
+        // decrement from balance
+        _balanceOf[from]--;
 
-            _balanceOf[to]++;
-        }
+        // increment to balance
+        _balanceOf[to]++;
 
+        // update the owner
         _ownerOf[id] = to;
 
+        // remove the approvals
         delete getApproved[id];
 
+        // emit event
         emit Transfer(from, to, id);
     }
 
@@ -114,25 +136,21 @@ abstract contract ERC721 {
     ) public virtual {
         transferFrom(from, to, id);
 
-        require(
-            to.code.length == 0 ||
-                ERC721TokenReceiver(to).onERC721Received(msg.sender, from, id, "") ==
-                ERC721TokenReceiver.onERC721Received.selector,
-            "UNSAFE_RECIPIENT"
-        );
-    }
+        // each address has a code property which tells if this is an EOA or contract
+        // if to.code.length is zero then it's an EOA
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 id,
-        bytes calldata data
-    ) public virtual {
-        transferFrom(from, to, id);
+        bool isEOA = to.code.length == 0;
 
         require(
-            to.code.length == 0 ||
-                ERC721TokenReceiver(to).onERC721Received(msg.sender, from, id, data) ==
+            // if its an EOA pass the require
+            isEOA ||
+            // otherwise check if the contract has implemented `onERC721Received`
+                ERC721TokenReceiver(to).onERC721Received(
+                    msg.sender, // caller
+                    from,     // from
+                    id,       // tokenId
+                    ""          // data
+                ) ==
                 ERC721TokenReceiver.onERC721Received.selector,
             "UNSAFE_RECIPIENT"
         );
@@ -142,7 +160,12 @@ abstract contract ERC721 {
                                 ERC165 LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function supportsInterface(bytes4 interfaceId) public view virtual returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        returns (bool)
+    {
         return
             interfaceId == 0x01ffc9a7 || // ERC165 Interface ID for ERC165
             interfaceId == 0x80ac58cd || // ERC165 Interface ID for ERC721
@@ -158,10 +181,7 @@ abstract contract ERC721 {
 
         require(_ownerOf[id] == address(0), "ALREADY_MINTED");
 
-        // Counter overflow is incredibly unrealistic.
-        unchecked {
-            _balanceOf[to]++;
-        }
+        _balanceOf[to]++;
 
         _ownerOf[id] = to;
 
@@ -173,10 +193,7 @@ abstract contract ERC721 {
 
         require(owner != address(0), "NOT_MINTED");
 
-        // Ownership check above ensures no underflow.
-        unchecked {
-            _balanceOf[owner]--;
-        }
+        _balanceOf[owner]--;
 
         delete _ownerOf[id];
 
@@ -192,24 +209,18 @@ abstract contract ERC721 {
     function _safeMint(address to, uint256 id) internal virtual {
         _mint(to, id);
 
-        require(
-            to.code.length == 0 ||
-                ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), id, "") ==
-                ERC721TokenReceiver.onERC721Received.selector,
-            "UNSAFE_RECIPIENT"
-        );
-    }
-
-    function _safeMint(
-        address to,
-        uint256 id,
-        bytes memory data
-    ) internal virtual {
-        _mint(to, id);
+        bool isEOA = to.code.length == 0;
 
         require(
-            to.code.length == 0 ||
-                ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), id, data) ==
+            // if its an EOA pass the require
+            isEOA ||
+            // otherwise check if the contract has implemented `onERC721Received`
+                ERC721TokenReceiver(to).onERC721Received(
+                    msg.sender, // caller
+                    address(0), // from
+                    id,       // tokenId
+                    ""          // data
+                ) ==
                 ERC721TokenReceiver.onERC721Received.selector,
             "UNSAFE_RECIPIENT"
         );
@@ -219,10 +230,10 @@ abstract contract ERC721 {
 /// @notice A generic interface for a contract which properly accepts ERC721 tokens.
 abstract contract ERC721TokenReceiver {
     function onERC721Received(
-        address,
-        address,
-        uint256,
-        bytes calldata
+        address, // caller
+        address, // from
+        uint256, // tokenId
+        bytes calldata // data
     ) external virtual returns (bytes4) {
         return ERC721TokenReceiver.onERC721Received.selector;
     }
