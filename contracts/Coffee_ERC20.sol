@@ -19,7 +19,12 @@ contract MyToken is ERC20 {
         // 1 dollar = 100 cents
         // 1 token = 1 * (10 ** decimals)
         uint8 _decimals = decimals();
-        _mint(msg.sender, 10_000 * 10**uint256(_decimals));
+        uint256 _typeCastedDecimals = uint256(_decimals);
+
+        _mint(
+            msg.sender, // account
+            10_000 * 10 ** _typeCastedDecimals // amount e.g. 10_000 x 10^18
+        );
     }
 
     /*//////////////////////////////////////////////////////////////

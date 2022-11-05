@@ -23,8 +23,6 @@ contract Coffee {
     uint256 public priceOfCoffee;
     address payable public owner;
 
-    bool private _locked;
-
     mapping(address => Donate) private _donations;
 
     /*//////////////////////////////////////////////////////////////
@@ -34,13 +32,6 @@ contract Coffee {
     modifier onlyOwner() {
         require(msg.sender == owner, "Revert: not an owner");
         _;
-    }
-
-    modifier noReentrant() {
-        require(!_locked, "Revert: no re-entrancy bro!");
-        _locked = true;
-        _;
-        _locked = false;
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -71,36 +62,40 @@ contract Coffee {
     //////////////////////////////////////////////////////////////*/
 
     /** 
-     * @notice User can call this function to donate a coffee to owner
+     * @notice User can call this function to donate tokens equivalent 
+     * to number of coffees to the owner.
      * @dev User must have tokens to donate.
     */
-    function donate(uint256 _num) external noReentrant returns (bool) {
-        require(_num > 0, "Revert: bro donate 1 coffee atleast!");
+    function donate(uint256 _numOfCoffees) external returns (bool) {
+        require(_numOfCoffees > 0, "Revert: bro donate 1 coffee atleast!");
 
         // loading state variable in memory for gas optimization
         uint256 _priceOfCoffee = priceOfCoffee;
 
         // multiply number of coffees to donate by price of coffee
         // to get total donation
-        uint256 _donation = _priceOfCoffee * _num; 
+        uint256 _noOfTokensToDonate = _priceOfCoffee * _numOfCoffees; 
 
+        // save the token balance in a local variable
         uint256 _tokenBalance = token.balanceOf(msg.sender);
-        require(_tokenBalance > _donation, "Revert: bro you're broke as well!");
+
+        // check if balance is greater then the donation amount
+        require(_tokenBalance > _noOfTokensToDonate, "Revert: bro you're broke as well!");
 
         // updating state
-        _donations[msg.sender].tokensDonated += _donation;
+        _donations[msg.sender].tokensDonated += _noOfTokensToDonate;
         _donations[msg.sender].noOfDonations += 1;
 
         // approval must be given from msg.sender to this contract address before
         // transfers tokens from msg.sender to this contract
-        token.transferFrom(msg.sender, address(this), _donation);
+        token.transferFrom(msg.sender, address(this), _noOfTokensToDonate);
 
-        for (uint256 i; i < _num; i++) {
+        for (uint256 i; i < _numOfCoffees; i++) {
             // mint nft to msg.sender
             nft.mintTo(msg.sender);
         }
 
-        emit Deposit(_donation, msg.sender);
+        emit Deposit(_noOfTokensToDonate, msg.sender);
 
         return true;
     }
@@ -110,7 +105,10 @@ contract Coffee {
      * @dev Only callable by owner
     */
     function withdraw() external onlyOwner returns (bool) {
+        // save the token balance in a local variable
         uint256 _balance = token.balanceOf(address(this));
+
+        // check if tokens exist in this contract
         require(_balance > 0, "Revert: No tokens in contract!");
 
         // transfer tokens in the contract to owner
